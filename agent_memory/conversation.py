@@ -43,7 +43,8 @@ class ConversationHistory:
     ) -> Message:
         """Append a message to the conversation and persist it."""
         msg = Message(role=role, content=content, metadata=metadata or {})
-        self._backend.save_message(msg.model_dump())
+        with self._lock:
+            self._backend.save_message(msg.model_dump())
         return msg
 
     def get_history(
