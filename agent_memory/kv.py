@@ -61,18 +61,18 @@ class KeyValueStore:
         """Return all non-expired keys."""
         with self._lock:
             all_keys = self._backend.list_kv_keys()
-        # Filter out expired ones
-        alive: List[str] = []
-        for k in all_keys:
-            raw = self._backend.load_kv(k)
-            if raw is None:
-                continue
-            entry = KVEntry(**raw)
-            if not entry.expired:
-                alive.append(k)
-            else:
-                self._backend.delete_kv(k)
-        return alive
+            # Filter out expired ones
+            alive: List[str] = []
+            for k in all_keys:
+                raw = self._backend.load_kv(k)
+                if raw is None:
+                    continue
+                entry = KVEntry(**raw)
+                if not entry.expired:
+                    alive.append(k)
+                else:
+                    self._backend.delete_kv(k)
+            return alive
 
     def exists(self, key: str) -> bool:
         """Check if *key* exists and is not expired."""
